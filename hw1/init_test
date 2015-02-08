@@ -27,7 +27,7 @@ cd test
 echo
 echo  '*** WELCOME TO YOUR BEARGIT TEST DIRECTORY ***'
 echo
-echo 'You are now in the $PWD directory, which is a brand-new directory created for'
+echo 'You are now in the test directory, which is a brand-new directory created for'
 echo 'you to test out your beargit implementation. Your source directory has also'
 echo 'been added to the PATH, so you can just type commands such as "beargit init" to'
 echo 'try out your implementation.'
