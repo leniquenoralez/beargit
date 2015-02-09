@@ -184,7 +184,7 @@ void next_commit_id(char* commit_id) {
   char current_branch[BRANCHNAME_SIZE];
   read_string_from_file(".beargit/.current_branch", current_branch, BRANCHNAME_SIZE);
 
-  // Fill the first COMMIT_ID_BRANCH_BYTES=10 characters of the commit ID will
+  // The first COMMIT_ID_BRANCH_BYTES=10 characters of the commit ID will
   // be used to encode the current branch number. This is necessary to avoid
   // duplicate IDs in different branches, as they can have the same pre-
   // decessor (so next_commit_id has to depend on something else).
@@ -262,10 +262,10 @@ int beargit_checkout(const char* arg, int new_branch) {
     fs_cp(".beargit/.prev", current_branch_file);
   }
 
-  // ...and setting the current branch to none (i.e., detached).
+  // ...and set the current branch to none (i.e., detached).
   write_string_to_file(".beargit/.current_branch", "");
 
-  // Check whether the argument is a commit ID. If yes, we just change to detached mode
+  // Check whether the argument is a commit ID. If yes, we just stay in detached mode
   // without actually having to change into any other branch.
   if (is_it_a_commit_id(arg)) {
     char commit_dir[FILENAME_SIZE] = ".beargit/";
@@ -292,7 +292,7 @@ int beargit_checkout(const char* arg, int new_branch) {
     return 1;
   }
 
-  // File for the branch to change into.
+  // File for the branch we are changing into.
   char* branch_file = ".beargit/.branch_"; 
   strcat(branch_file, branch_name);
 

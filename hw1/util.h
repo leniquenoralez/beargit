@@ -113,7 +113,7 @@ static void write_string_to_file(const char* filename, const char* str) {
 static void read_string_from_file(const char* filename, char* str, int size) {
   FILE* fin = fopen(filename, "r");
   ASSERT_ERROR_MESSAGE(fin != NULL, "couldn't open file");
-  int real_size = fread(str, 1, size, fin);
+  fread(str, 1, size, fin);
   fclose(fin);
 }
 
