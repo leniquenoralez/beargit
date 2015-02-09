@@ -255,15 +255,13 @@ int beargit_checkout(const char* arg, int new_branch) {
   char current_branch[BRANCHNAME_SIZE];
   read_string_from_file(".beargit/.current_branch", "current_branch", BRANCHNAME_SIZE);
 
-  // If not detached, leave the current branch by storing the current HEAD into that branch's file...
+  // If not detached, update the current branch by storing the current HEAD into that branch's file...
+  // Even if we cancel later, this is still ok.
   if (strlen(current_branch)) {
     char current_branch_file[BRANCHNAME_SIZE+50];
     sprintf(current_branch_file, ".beargit/.branch_%s", current_branch);
     fs_cp(".beargit/.prev", current_branch_file);
   }
-
-  // ...and set the current branch to none (i.e., detached).
-  write_string_to_file(".beargit/.current_branch", "");
 
   // Check whether the argument is a commit ID. If yes, we just stay in detached mode
   // without actually having to change into any other branch.
@@ -274,6 +272,10 @@ int beargit_checkout(const char* arg, int new_branch) {
       fprintf(stderr, "ERROR: Commit %s does not exist\n", arg);
       return 1;
     }
+
+    // Set the current branch to none (i.e., detached).
+    write_string_to_file(".beargit/.current_branch", "");
+
     return checkout_commit(arg);
   }
 
