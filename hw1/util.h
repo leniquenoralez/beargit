@@ -70,7 +70,7 @@ static void fs_rm(const char* filename) {
 static void fs_force_rm_beargit_dir() {
   // BAD HACK. Don't use this in real-world code.
   // This removes the .beargit directory and directs all output to /dev/null
-  system("rm -r .beargit > /dev/null");
+  system("rm -rf .beargit");
 }
 
 static void fs_mv(const char* src, const char* dst) {
