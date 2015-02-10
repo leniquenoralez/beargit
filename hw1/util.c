@@ -47,9 +47,9 @@ int is_sane_path(const char* path) {
     return 0;
 
   // Only allow modifying files in .beargit directory
-  const char* prefix = ".beargit";
-  if (strncmp(prefix, path, strlen(prefix)) != 0)
-    return 0;
+  //const char* prefix = ".beargit";
+  //if (strncmp(prefix, path, strlen(prefix)) != 0)
+  //  return 0;
 
   return 1;
 }
