@@ -302,6 +302,7 @@ int beargit_checkout(const char* arg, int new_branch) {
   if (new_branch) {
     FILE* fbranches = fopen(".beargit/.branches", "a");
     fprintf(fbranches, "%s\n", branch_name);
+    fclose(fbranches);
     fs_cp(".beargit/.prev", branch_file); 
   }
 
