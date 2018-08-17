@@ -9,6 +9,10 @@
 #include <sys/stat.h>
 
 #include "beargit.h"
+<<<<<<< HEAD
+=======
+#include "cunittests.h"
+>>>>>>> hw2_starter/master
 
 int check_initialized(void) {
   struct stat s;
@@ -28,8 +32,13 @@ int check_filename(const char* filename) {
   return (ret_code != -1 && !(S_ISDIR(s.st_mode)));
 }
 
+<<<<<<< HEAD
 int main(int argc, char **argv) {
 
+=======
+#ifndef TESTING
+int main(int argc, char **argv) {
+>>>>>>> hw2_starter/master
     if (argc < 2) {
         fprintf(stderr, "Usage: %s <command> [<args>]\n", argv[0]);
         return 2;
@@ -38,6 +47,10 @@ int main(int argc, char **argv) {
     // TODO: If students aren't going to write this themselves, replace by clean
     // implementation using function pointers.
     if (strcmp(argv[1], "init") == 0) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> hw2_starter/master
       if (check_initialized()) {
         fprintf(stderr, "ERROR: Repository is already initialized\n");
         return 1;
@@ -55,7 +68,11 @@ int main(int argc, char **argv) {
         if (strcmp(argv[1], "add") == 0 || strcmp(argv[1], "rm") == 0) {
 
           if (argc < 3 || !check_filename(argv[2])) {
+<<<<<<< HEAD
             fprintf(stderr, "ERROR: No or invalid filname given\n");
+=======
+            fprintf(stderr, "ERROR: No or invalid filename given\n");
+>>>>>>> hw2_starter/master
             return 1;
           }
 
@@ -80,13 +97,54 @@ int main(int argc, char **argv) {
           return beargit_commit(argv[3]);
 
         } else if (strcmp(argv[1], "status") == 0) {
+<<<<<<< HEAD
 
             return beargit_status();
         } else if (strcmp(argv[1], "log") == 0) {
             return beargit_log();
+=======
+            return beargit_status();
+        } else if (strcmp(argv[1], "log") == 0) {
+            return beargit_log();
+        } else if (strcmp(argv[1], "branch") == 0) {
+            return beargit_branch();
+        } else if (strcmp(argv[1], "checkout") == 0) {
+            int branch_new = 0;
+            char* arg = NULL;
+
+            for (int i = 2; i < argc; i++) {
+              if (argv[i][0] == '-') {
+                if (strcmp(argv[i], "-b") == 0) {
+                  branch_new = 1;
+                  continue;
+                } else {
+                  fprintf(stderr, "ERROR: Invalid argument: %s", argv[i]);
+                  return 1;
+                }
+              }
+
+              if (arg) {
+                  fprintf(stderr, "ERROR: Too many arguments for checkout!");
+                  return 1;
+              }
+
+              arg = argv[i];
+            }
+
+            return beargit_checkout(arg, branch_new);
+>>>>>>> hw2_starter/master
         } else {
             fprintf(stderr, "ERROR: Unknown command \"%s\"\n", argv[1]);
             return 1;
         }
     }
 }
+<<<<<<< HEAD
+=======
+#else
+/* Runs CUnit Tests that you must write. */
+int main(int argc, char **argv) {
+    return cunittester();
+}
+#endif
+>>>>>>> hw2_starter/master
