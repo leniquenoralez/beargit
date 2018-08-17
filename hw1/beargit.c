@@ -151,7 +151,7 @@ int is_commit_msg_ok(const char* msg) {
   return 0;
 }
 
-void next_commit_id(char* commit_id) {
+void next_commit_id_hw1(char* commit_id) {
 
   if (commit_id[0] == '0'){
 
@@ -222,7 +222,7 @@ void move_commit_file(char * file_dir, char * file, char * file_src ){
 }
 
 
-int beargit_commit(const char* msg) {
+int beargit_commit_hw1(const char* msg) {
 
   if (!is_commit_msg_ok(msg)) {
 
