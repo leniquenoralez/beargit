@@ -118,11 +118,11 @@ int is_commit_msg_ok(const char* msg) {
   return 0;
 }
 
-void next_commit_id(char* commit_id) {
+void next_commit_id_hw1(char* commit_id) {
   /* COMPLETE THE REST */
 }
 
-int beargit_commit(const char* msg) {
+int beargit_commit_hw1(const char* msg) {
   if (!is_commit_msg_ok(msg)) {
     fprintf(stderr, "ERROR: Message must contain \"%s\"\n", go_bears);
     return 1;
