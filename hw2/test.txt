@@ -1,0 +1,20 @@
+source init_test
+
+touch test0.txt test1.txt test2.txt test3.txt test4.txt test5.txt
+
+beargit init 
+
+beargit add test0.txt
+beargit add test1.txt
+beargit add test2.txt
+beargit add test3.txt
+beargit add test4.txt
+beargit add test5.txt
+
+beargit commit -m "asdasdasd"
+
+beargit commit -m "Commit 1 GO BEARS!"
+
+beargit commit -m "Commit 2 GO BEARS!"
+
+beargit commit -m "Commit 3 GO BEARS!"
