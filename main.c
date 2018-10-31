@@ -29,7 +29,6 @@ int check_filename(const char* filename) {
 }
 
 int main(int argc, char **argv) {
-
     if (argc < 2) {
         fprintf(stderr, "Usage: %s <command> [<args>]\n", argv[0]);
         return 2;
@@ -38,6 +37,7 @@ int main(int argc, char **argv) {
     // TODO: If students aren't going to write this themselves, replace by clean
     // implementation using function pointers.
     if (strcmp(argv[1], "init") == 0) {
+
       if (check_initialized()) {
         fprintf(stderr, "ERROR: Repository is already initialized\n");
         return 1;
@@ -80,7 +80,6 @@ int main(int argc, char **argv) {
           return beargit_commit(argv[3]);
 
         } else if (strcmp(argv[1], "status") == 0) {
-
             return beargit_status();
         } else if (strcmp(argv[1], "log") == 0) {
             return beargit_log();

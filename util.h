@@ -32,8 +32,7 @@ int is_sane_path(const char* path) {
 static void fs_mkdir(const char* dirname) {
   ASSERT_ERROR_MESSAGE(dirname != NULL, "dirname is not a valid string");
   ASSERT_ERROR_MESSAGE(is_sane_path(dirname), "dirname is not a valid path within .beargit");
-  // int ret = mkdir(dirname, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-  int ret = mkdir(dirname);
+  int ret = mkdir(dirname, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
   ASSERT_ERROR_MESSAGE(ret == 0, "creating directory failed");
 }
 

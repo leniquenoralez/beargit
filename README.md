@@ -11,4 +11,3 @@ Beargit is a simplified version of git that I completed as a part of [CS61C from
  - status
  - log
 ```
-
