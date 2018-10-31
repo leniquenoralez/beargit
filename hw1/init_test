@@ -39,3 +39,14 @@ echo
 echo 'Hint: You may want to use the "touch <filename>" command to generate files for'
 echo 'testing. This will create an empty file with a certain name.'
 echo
+touch tetst_1.txt
+touch tetst_2.txt
+touch tetst_3.txt
+touch tetst_4.txt
+touch tetst_5.txt
+beargit init
+beargit add tetst_1.txt
+beargit add tetst_2.txt
+beargit add tetst_3.txt
+beargit add tetst_4.txt
+beargit add tetst_5.txt
