@@ -50,3 +50,4 @@ beargit add tetst_2.txt
 beargit add tetst_3.txt
 beargit add tetst_4.txt
 beargit add tetst_5.txt
+beargit commit -m "GO BEARS!"
