@@ -51,3 +51,6 @@ beargit add tetst_3.txt
 beargit add tetst_4.txt
 beargit add tetst_5.txt
 beargit commit -m "GO BEARS!"
+touch tetst_6.txt
+beargit add tetst_6.txt
+beargit commit -m "GO BEARS! new commit"
