@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <stdio.h> 
+#include <dirent.h> 
+
 #include <unistd.h>
 #include <sys/stat.h>
 
@@ -26,7 +29,36 @@
  *  - You NEED to test your code. The autograder we provide does not contain the
  *    full set of tests that we will run on your code. See "Step 5" in the homework spec.
  */
+void new_commit_dir(char* filename){
 
+  char newDir[50];
+
+  strcpy(newDir, ".beargit/");
+  strcat(newDir, filename);
+
+  fs_mkdir(newDir);
+
+}
+
+void move_commit_file(char * file_dir, char * file, char * file_src ){
+
+
+  int dir_name_len = 1 + strlen(file_dir) + strlen(file);
+
+  char dir[dir_name_len];
+  strcpy(dir, file_dir);
+
+  if (file[0] != '/'){
+
+    strcat(dir, "/");
+
+  }
+
+  strcat(dir, file);
+
+  fs_cp(file_src,dir);
+
+}
 /* beargit init
  *
  * - Create .beargit directory
@@ -38,6 +70,9 @@
  */
 
 int beargit_init(void) {
+
+
+
   fs_mkdir(".beargit");
 
   FILE* findex = fopen(".beargit/.index", "w");
@@ -49,6 +84,47 @@ int beargit_init(void) {
    
   write_string_to_file(".beargit/.prev", "0000000000000000000000000000000000000000");
   write_string_to_file(".beargit/.current_branch", "master");
+
+  // Create New Directory for current commit
+  new_commit_dir("0000000000000000000000000000000000000000");
+
+  char commit_dir[50];
+
+  strcpy(commit_dir, ".beargit/");
+  strcat(commit_dir, "0000000000000000000000000000000000000000");
+
+  // Copy .beargit/.index, .beargit/.prev and all tracked files into the directory.
+  move_commit_file(commit_dir, "/.index" , ".beargit/.index");
+
+  struct dirent *de;
+  DIR *dr = opendir(".");
+
+  // opendir returns NULL if couldn't open directory 
+  if (dr == NULL){ 
+    printf("Could not open current directory" ); 
+    return 0; 
+  } 
+
+  // Refer http://pubs.opengroup.org/onlinepubs/7990989775/xsh/readdir.html 
+  // for readdir() 
+
+  FILE *fnewindex = fopen(".beargit/0000000000000000000000000000000000000000/.index", "w");
+
+  while ((de = readdir(dr)) != NULL){
+
+    if (de->d_name[0] != '.')
+    {
+
+      printf("%s\n", de->d_name);
+
+      fprintf(fnewindex, "%s\n", de->d_name);
+      move_commit_file(commit_dir, de->d_name, de->d_name);
+    }
+    
+  }
+  fclose(fnewindex);
+  closedir(dr);
+
 
   return 0;
 }
@@ -193,36 +269,7 @@ void next_commit_id_hw1(char* commit_id) {
 
 }
 
-void new_commit_dir(char* filename){
 
-  char newDir[50];
-
-  strcpy(newDir, ".beargit/");
-  strcat(newDir, filename);
-
-  fs_mkdir(newDir);
-
-}
-
-void move_commit_file(char * file_dir, char * file, char * file_src ){
-
-
-  int dir_name_len = 1 + strlen(file_dir) + strlen(file);
-
-  char dir[dir_name_len];
-  strcpy(dir, file_dir);
-
-  if (file[0] != '/'){
-
-    strcat(dir, "/");
-
-  }
-
-  strcat(dir, file);
-
-  fs_cp(file_src,dir);
-
-}
 
 int beargit_commit_hw1(const char* msg) {
 
@@ -477,6 +524,7 @@ int beargit_branch() {
 int checkout_commit(const char* commit_id) {
 
   // Remove All Files From Current commit
+
   FILE* findex = fopen(".beargit/.index", "r");
   char line[BRANCHNAME_SIZE];
   while(fgets(line, sizeof(line), findex)) {
@@ -500,8 +548,8 @@ int checkout_commit(const char* commit_id) {
 
     strtok(line, "\n");
     sprintf(file_to_src, ".beargit/%s/%s", commit_id,line);
-    sprintf(file_to_dst, ".beargit/%s",line);
-    fs_cp(file_to_src,file_to_dst);
+    // sprintf(file_to_dst, ".beargit/%s",line);
+    fs_cp(file_to_src,line);
   
   }
 
@@ -518,17 +566,11 @@ int checkout_commit(const char* commit_id) {
   return 0;
 }
 
-int beargit_checkout(const char* arg, int new_branch){
 
-
-  return checkout_commit(arg);
-}
 
 int is_it_a_commit_id(const char* commit_id) {
 
-
   if (strlen(commit_id) != 40){
-    printf("Length Incorrect: %lu \n",strlen(commit_id) );
     return 0;
 
   }else{
@@ -537,8 +579,6 @@ int is_it_a_commit_id(const char* commit_id) {
 
 
       if (commit_id[i] != '6' && commit_id[i] != '1' && commit_id[i] != 'c' ){
-
-        printf("Character %d Incorrect: %c\n", i, commit_id[i]);
         return 0;
 
       }
@@ -552,68 +592,69 @@ int is_it_a_commit_id(const char* commit_id) {
 
 
 
-// int beargit_checkout(const char* arg, int new_branch) {
-//   // Get the current branch
-//   char current_branch[BRANCHNAME_SIZE];
-//   read_string_from_file(".beargit/.current_branch", "current_branch", BRANCHNAME_SIZE);
+int beargit_checkout(const char* arg, int new_branch) {
+  // Get the current branch
+  char current_branch[BRANCHNAME_SIZE];
 
-//   // If not detached, update the current branch by storing the current HEAD into that branch's file...
-//   // Even if we cancel later, this is still ok.
-//   if (strlen(current_branch)) {
-//     char current_branch_file[BRANCHNAME_SIZE+50];
-//     sprintf(current_branch_file, ".beargit/.branch_%s", current_branch);
-//     fs_cp(".beargit/.prev", current_branch_file);
-//   }
+  read_string_from_file(".beargit/.current_branch", current_branch, BRANCHNAME_SIZE);
 
-//   // Check whether the argument is a commit ID. If yes, we just stay in detached mode
-//   // without actually having to change into any other branch.
-//   if (is_it_a_commit_id(arg)) {
-//     char commit_dir[FILENAME_SIZE] = ".beargit/";
-//     strcat(commit_dir, arg);
-//     if (!fs_check_dir_exists(commit_dir)) {
-//       fprintf(stderr, "ERROR: Commit %s does not exist\n", arg);
-//       return 1;
-//     }
+  // If not detached, update the current branch by storing the current HEAD into that branch's file...
+  // Even if we cancel later, this is still ok.
+  if (strlen(current_branch)) {
+    char current_branch_file[BRANCHNAME_SIZE+50];
+    sprintf(current_branch_file, ".beargit/.branch_%s", current_branch);
+    fs_cp(".beargit/.prev", current_branch_file);
+  }
 
-//     // Set the current branch to none (i.e., detached).
-//     write_string_to_file(".beargit/.current_branch", "");
+  // Check whether the argument is a commit ID. If yes, we just stay in detached mode
+  // without actually having to change into any other branch.
+  if (is_it_a_commit_id(arg)) {
+    char commit_dir[FILENAME_SIZE] = ".beargit/";
+    strcat(commit_dir, arg);
+    if (!fs_check_dir_exists(commit_dir)) {
+      fprintf(stderr, "ERROR: Commit %s does not exist\n", arg);
+      return 1;
+    }
 
-//     return checkout_commit(arg);
-//   }
+    // Set the current branch to none (i.e., detached).
+    write_string_to_file(".beargit/.current_branch", "");
 
-//   // Just a better name, since we now know the argument is a branch name.
-//   const char* branch_name = arg;
+    return checkout_commit(arg);
+  }
 
-//   // Read branches file (giving us the HEAD commit id for that branch).
-//   int branch_exists = (get_branch_number(branch_name) >= 0);
+  // Just a better name, since we now know the argument is a branch name.
+  const char* branch_name = arg;
 
-//   // Check for errors.
-//   if (!(!branch_exists || !new_branch)) {
-//     fprintf(stderr, "ERROR: A branch named %s already exists\n", branch_name);
-//     return 1;
-//   } else if (!branch_exists && new_branch) {
-//     fprintf(stderr, "ERROR: No branch %s exists\n", branch_name);
-//     return 1;
-//   }
+  // Read branches file (giving us the HEAD commit id for that branch).
+  int branch_exists = (get_branch_number(branch_name) >= 0);
 
-//   // File for the branch we are changing into.
-//   char* branch_file = ".beargit/.branch_"; 
-//   strcat(branch_file, branch_name);
+  // Check for errors.
+  if (!(!branch_exists || !new_branch)) {
+    fprintf(stderr, "ERROR: A branch named %s already exists\n", branch_name);
+    return 1;
+  } else if (!branch_exists && new_branch) {
+    fprintf(stderr, "ERROR: No branch %s exists\n", branch_name);
+    return 1;
+  }
 
-//   // Update the branch file if new branch is created (now it can't go wrong anymore)
-//   if (new_branch) {
-//     FILE* fbranches = fopen(".beargit/.branches", "a");
-//     fprintf(fbranches, "%s\n", branch_name);
-//     fclose(fbranches);
-//     fs_cp(".beargit/.prev", branch_file); 
-//   }
+  // File for the branch we are changing into.
+  char* branch_file = ".beargit/.branch_"; 
+  strcat(branch_file, branch_name);
 
-//   write_string_to_file(".beargit/.current_branch", branch_name);
+  // Update the branch file if new branch is created (now it can't go wrong anymore)
+  if (new_branch) {
+    FILE* fbranches = fopen(".beargit/.branches", "a");
+    fprintf(fbranches, "%s\n", branch_name);
+    fclose(fbranches);
+    fs_cp(".beargit/.prev", branch_file); 
+  }
 
-//   // Read the head commit ID of this branch.
-//   char branch_head_commit_id[COMMIT_ID_SIZE];
-//   read_string_from_file(branch_file, branch_head_commit_id, COMMIT_ID_SIZE);
+  write_string_to_file(".beargit/.current_branch", branch_name);
 
-//   // Check out the actual commit.
-//   return checkout_commit(branch_head_commit_id);
-// }
+  // Read the head commit ID of this branch.
+  char branch_head_commit_id[COMMIT_ID_SIZE];
+  read_string_from_file(branch_file, branch_head_commit_id, COMMIT_ID_SIZE);
+
+  // Check out the actual commit.
+  return checkout_commit(branch_head_commit_id);
+}
